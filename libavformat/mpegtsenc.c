@@ -423,6 +423,9 @@ static int get_dvb_stream_type(AVFormatContext *s, AVStream *st)
     case AV_CODEC_ID_ARIB_CAPTION:
         stream_type = STREAM_TYPE_PRIVATE_DATA;
         break;
+    case AV_CODEC_ID_JPEG2000:
+        stream_type = AV_CODEC_ID_JPEG2000;
+        break;
     case AV_CODEC_ID_SMPTE_KLV:
         if (st->codecpar->profile == FF_PROFILE_KLVA_SYNC) {
             stream_type = STREAM_TYPE_METADATA;
@@ -480,6 +483,9 @@ static int get_m2ts_stream_type(AVFormatContext *s, AVStream *st)
         break;
     case AV_CODEC_ID_HDMV_TEXT_SUBTITLE:
         stream_type = 0x92;
+        break;
+    case AV_CODEC_ID_JPEG2000:
+        stream_type = AV_CODEC_ID_JPEG2000;
         break;
     default:
         av_log_once(s, AV_LOG_WARNING, AV_LOG_DEBUG, &ts_st->data_st_warning,
