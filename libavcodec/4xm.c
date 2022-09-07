@@ -37,8 +37,8 @@
 #include "bswapdsp.h"
 #include "bytestream.h"
 #include "codec_internal.h"
+#include "decode.h"
 #include "get_bits.h"
-#include "internal.h"
 
 
 #define BLOCK_TYPE_VLC_BITS 5
@@ -1028,7 +1028,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
 const FFCodec ff_fourxm_decoder = {
     .p.name         = "4xm",
-    .p.long_name    = NULL_IF_CONFIG_SMALL("4X Movie"),
+    CODEC_LONG_NAME("4X Movie"),
     .p.type         = AVMEDIA_TYPE_VIDEO,
     .p.id           = AV_CODEC_ID_4XM,
     .priv_data_size = sizeof(FourXContext),

@@ -479,7 +479,10 @@ static int select_rc_mode(AVCodecContext *avctx, QSVEncContext *q)
         rc_desc = "constant bitrate (CBR)";
     }
 #if QSV_HAVE_AVBR
-    else if (!avctx->rc_max_rate) {
+    else if (!avctx->rc_max_rate &&
+             (avctx->codec_id == AV_CODEC_ID_H264 || avctx->codec_id == AV_CODEC_ID_HEVC) &&
+             q->avbr_accuracy &&
+             q->avbr_convergence) {
         rc_mode = MFX_RATECONTROL_AVBR;
         rc_desc = "average variable bitrate (AVBR)";
     }
@@ -970,7 +973,7 @@ static int init_video_param(AVCodecContext *avctx, QSVEncContext *q)
         q->extvsi.MatrixCoefficients = avctx->colorspace;
     }
 
-    if (q->extvsi.VideoFullRange || q->extvsi.ColourDescriptionPresent) {
+    if ((avctx->codec_id != AV_CODEC_ID_VP9) && (q->extvsi.VideoFullRange || q->extvsi.ColourDescriptionPresent)) {
         q->extvsi.Header.BufferId = MFX_EXTBUFF_VIDEO_SIGNAL_INFO;
         q->extvsi.Header.BufferSz = sizeof(q->extvsi);
         q->extparam_internal[q->nb_extparam_internal++] = (mfxExtBuffer *)&q->extvsi;
@@ -1064,7 +1067,7 @@ static int qsv_retrieve_enc_params(AVCodecContext *avctx, QSVEncContext *q)
 {
     AVCPBProperties *cpb_props;
 
-    uint8_t sps_buf[128];
+    uint8_t sps_buf[512];
     uint8_t pps_buf[128];
 
     mfxExtCodingOptionSPSPPS extradata = {
